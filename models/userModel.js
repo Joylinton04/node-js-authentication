@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import Joi from "joi";
+import jwt from 'jsonwebtoken'
 
 
 const userSchema = new mongoose.Schema({
@@ -13,6 +14,12 @@ const userSchema = new mongoose.Schema({
     resetOtpExpireAt: {type: Number, default: 0},
 })
 
+
+
+userSchema.methods.generateAuthtoken = function () {
+    const token = jwt.sign({id: this._id}, process.env.VITE_JWT_SECRET);
+    return token
+}
 
 const userModel = mongoose.models.user || mongoose.model('user', userSchema)
 
