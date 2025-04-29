@@ -3,6 +3,7 @@ import cors from 'cors'
 import 'dotenv/config'
 import cookieParser from 'cookie-parser'
 import connectDB from './config/mongodb.js'
+import authRouter from './route/auth.js'
 
 
 const app = express();
@@ -12,7 +13,9 @@ app.use(cors({credentials: true}))
 
 connectDB()
 
-app.get('/', (req,res) => res.send('API is working'))
+//API EndPoints
+app.get('/', (req,res) => res.send('API is working...'))
+app.use('/api/auth', authRouter)
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {

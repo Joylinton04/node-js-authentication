@@ -10,7 +10,7 @@ export const register = async (req, res) => {
     return res.json({ success: false, message: "Missing Details" });
 
   try {
-    const existingUser = await userModel.findOne(email);
+    const existingUser = await userModel.findOne({email});
     if (existingUser)
       return res.json({
         success: false,
@@ -20,10 +20,10 @@ export const register = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
     const newUser = new userModel({ name, email, password: hashedPassword });
-
     await newUser.save();
 
     const token = newUser.generateAuthToken();
+
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -33,7 +33,7 @@ export const register = async (req, res) => {
 
     return res.json({ success: true });
   } catch (err) {
-    res.json({ success: false, message: err.message });
+    res.json({ success: false, message: err.message,});
   }
 };
 
