@@ -24,7 +24,7 @@ const userModel = mongoose.models.user || mongoose.model('user', userSchema)
 
 export async function validateUser(user) {
     const Schema = Joi.object({
-        name: Joi.string().required(),
+        name: Joi.string(),
         email: Joi.string().email().required(),
         password: Joi.string().min(8).max(255).required()
     })

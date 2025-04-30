@@ -2,7 +2,7 @@ import userModel, { validateUser } from "../models/userModel.js";
 import bcrypt, { hash } from "bcryptjs";
 
 export const register = async (req, res) => {
-  const { error } = validateUser(req.body);
+  const { error } = await validateUser(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
   const { name, email, password } = req.body;
@@ -33,12 +33,12 @@ export const register = async (req, res) => {
 
     return res.json({ success: true });
   } catch (err) {
-    res.json({ success: false, message: err.message,});
+    return res.json({ success: false, message: err.message,});
   }
 };
 
 export const login = async (req, res) => {
-  const { error } = validateUser(req.body);
+  const { error } = await validateUser(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
   const { email, password } = req.body;
@@ -46,15 +46,15 @@ export const login = async (req, res) => {
     return res.json({ success: false, message: "Missing Details" });
 
   try {
-    const user = userModel.findOne({ email });
+    const user = await userModel.findOne({ email });
     if (!user)
-      return res.json({ success: false, message: "Could not find user" });
+      return res.json({ success: false, message: "Invalid email" });
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch)
       return res.json({ success: false, message: "Invalid password" });
 
-    const token = newUser.generateAuthToken();
+    const token = user.generateAuthToken();
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -64,7 +64,7 @@ export const login = async (req, res) => {
 
     return res.json({ success: true });
   } catch (err) {
-    res.json({ success: false, message: err.message });
+    return res.json({ success: false, message: err.message });
   }
 };
 
