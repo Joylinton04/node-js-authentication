@@ -1,5 +1,6 @@
 import userModel, { validateUser } from "../models/userModel.js";
 import bcrypt, { hash } from "bcryptjs";
+import transporter from "../config/nodemailer.js";
 
 export const register = async (req, res) => {
   const { error } = await validateUser(req.body);
@@ -10,7 +11,7 @@ export const register = async (req, res) => {
     return res.json({ success: false, message: "Missing Details" });
 
   try {
-    const existingUser = await userModel.findOne({email});
+    const existingUser = await userModel.findOne({ email });
     if (existingUser)
       return res.json({
         success: false,
@@ -31,9 +32,20 @@ export const register = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
+    // sending welcome email
+
+    const mailOptions = {
+      from: process.env.VITE_SENDER_EMAIL,
+      to: email,
+      subject: "Welcome Message",
+      text: `Welcome! Your account has been created with the email: ${email}`,
+    };
+
+    await transporter.sendMail(mailOptions);
+
     return res.json({ success: true });
   } catch (err) {
-    return res.json({ success: false, message: err.message,});
+    return res.json({ success: false, message: err.message });
   }
 };
 
@@ -47,8 +59,7 @@ export const login = async (req, res) => {
 
   try {
     const user = await userModel.findOne({ email });
-    if (!user)
-      return res.json({ success: false, message: "Invalid email" });
+    if (!user) return res.json({ success: false, message: "Invalid email" });
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch)
@@ -76,9 +87,72 @@ export const logout = (req, res) => {
       sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
     });
 
-    return res.json({success: true, message: 'Logged out'})
-    
+    return res.json({ success: true, message: "Logged out" });
   } catch (err) {
     res.json({ success: false, message: err.message });
   }
 };
+
+//send verification otp to User's email
+export const sendVerifyOtp = async (req, res) => {
+  try {
+    const { userId } = req.body;
+    const user = await userModel.findById(userId)
+
+    if(user.isVerified) {
+      return res.json({success: false, message: "Account already verified"})
+    }
+
+    // generate OTP
+
+    const otp = String(Math.floor(100000 + Math.random() * 900000))
+    user.verifyOtp = otp
+    user.verifyOtpExpireAt = Date.now() + 24*60*60*1000
+    await user.save()
+
+    const mailOptions = {
+      from: process.env.VITE_SENDER_EMAIL,
+      to: user.email,
+      subject: "Account verification OTP",
+      text: `Your OTP is ${otp}. Verify your account using this OTP`,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res.json({success: true, message: "Verification OTP sent on Email"})
+
+  } catch (err) {
+    return res.json({ success: false, message: err.message });
+  }
+};
+
+export const verifyEmail = async (req,res) => {
+  const { userId,otp } = req.body;
+
+  if(!userId || !otp) 
+    return res.json({ success: false, message: "Missing details" });
+
+  try{
+    const user = await userModel.findById(userId)
+    if(!user)
+      return res.json({ success: false, message: "User not found" });
+
+    if(user.verifyOtp === '' || user.verifyOtp !== otp)
+      return res.json({success: false, message: "Invalid OTP"})
+
+    if(user.verifyOtpExpireAt < Date.now())
+      return res.json({success: false, message: "OTP Expired"})
+
+    user.isVerified = true;
+    user.verifyOtp = '';
+    verifyOtpExpireAt = 0
+
+    await user.save();
+
+    return res.json({success: true, message: 'Email verified successfully'})
+
+
+  }catch(err) {
+    return res.json({ success: false, message: err.message});
+  }
+}
