@@ -2,9 +2,9 @@ import express from 'express'
 import cors from 'cors'
 import 'dotenv/config'
 import cookieParser from 'cookie-parser'
-import connectDB from './config/mongodb.js'
-import authRouter from './route/auth.js'
-import userRouter from './route/userRoute.js'
+import connectDB from '../server/config/mongodb.js'
+import authRouter from '../server/route/auth.js'
+import userRouter from '../server/route/userRoute.js'
 
 
 const app = express();

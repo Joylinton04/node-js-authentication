@@ -1,6 +1,6 @@
 import userModel, { validateUser } from "../models/userModel.js";
 import bcrypt, { hash } from "bcryptjs";
-import transporter from "../config/nodemailer.js";
+import transporter from '../config/nodemailer.js'
 
 export const register = async (req, res) => {
   const { error } = await validateUser(req.body);
