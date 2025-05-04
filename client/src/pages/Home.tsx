@@ -44,7 +44,7 @@ const Home = () => {
           viewport={{ once: true }}
           className="text-3xl sm:text-5xl font-bold"
         >
-          Welcome to our app
+          Welcome to our App
         </motion.h1>
 
         <motion.div
