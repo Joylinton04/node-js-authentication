@@ -52,6 +52,7 @@ const Home = () => {
           whileInView={{ y: 0, opacity: 1 }}
           transition={{ duration: 1.1, ease: "easeOut", delay: 0.2 }}
           viewport={{ once: true }}
+          className="ssm:px-2"
         >
           Let's start with a quick product tour and we will have you up and
           running in no time!
