@@ -9,7 +9,7 @@ type FormState = "Sign Up" | "Login";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { backendUrl, isLoggedIn, userData, setIsLoggedIn } = useContext(AppContent);
+  const { backendUrl,getUserData,setIsLoggedIn } = useContext(AppContent);
 
   const [formState, setFormState] = useState<FormState>("Sign Up");
   const [formVariables, setFormVariables] = useState({
@@ -49,6 +49,7 @@ const Login = () => {
         });
         if(data.success) {
           setIsLoggedIn(true)
+          getUserData?.()
           navigate('/')
         }else{
           toast.error(data.message)
