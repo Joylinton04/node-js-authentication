@@ -1,9 +1,16 @@
-import React, { useState, ChangeEvent, FormEvent } from "react";
+import React, { useState, ChangeEvent, FormEvent, useContext } from "react";
 import assets from "../assets/assets";
+import { useNavigate } from "react-router-dom";
+import { AppContent } from "../context/AppContext";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 type FormState = "Sign Up" | "Login";
 
 const Login = () => {
+  const navigate = useNavigate();
+  const { backendUrl, isLoggedIn, userData, setIsLoggedIn } = useContext(AppContent);
+
   const [formState, setFormState] = useState<FormState>("Sign Up");
   const [formVariables, setFormVariables] = useState({
     name: "",
@@ -19,17 +26,49 @@ const Login = () => {
     }));
   };
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    console.log("Form submitted:", formVariables);
+  const handleSubmit = async (e: FormEvent) => {
+    try {
+      e.preventDefault();
+      axios.defaults.withCredentials = true
 
-    // You can add actual form logic here (API call, validation, etc.)
+      if (formState === "Sign Up") {
+        const {data} = await axios.post(backendUrl + "/api/auth/register", {
+          ...formVariables,
+        });
+        if(data.success) {
+          setIsLoggedIn(true)
+          navigate('/')
+        }else{
+          toast.error(data.message)
+        }
+      } else {
+        const { email, password } = formVariables;
+        const {data} = await axios.post(backendUrl + "/api/auth/login", {
+          email,
+          password,
+        });
+        if(data.success) {
+          setIsLoggedIn(true)
+          navigate('/')
+        }else{
+          toast.error(data.message)
+        }
+      }
+    } catch (error:any) {
+      toast.error(error.response.data)
+      console.error("Error during auth:", error.response.data);
+    }
   };
 
   return (
     <div className="font-default flex items-center justify-center min-h-screen px-6 sm:px-0 bg-gradient-to-br from-blue-200 to-purple-400">
       <div className="p-8 absolute top-0 left-5 sm:left-20">
-        <img src={assets.logo} alt="Header" />
+        <img
+          src={assets.logo}
+          alt="Header"
+          onClick={() => navigate("/")}
+          className="cursor-pointer "
+        />
       </div>
 
       {/* form section */}
@@ -55,7 +94,7 @@ const Login = () => {
                   value={formVariables.name}
                   onChange={setOnChange}
                   placeholder="Full Name"
-                  className="bg-transparent outline-none w-full"
+                  className="bg-transparent outline-none w-full text-white"
                   required
                 />
               </div>
@@ -69,7 +108,7 @@ const Login = () => {
                 value={formVariables.email}
                 onChange={setOnChange}
                 placeholder="Email"
-                className="bg-transparent outline-none w-full"
+                className="bg-transparent outline-none w-full text-white"
                 required
               />
             </div>
@@ -82,13 +121,16 @@ const Login = () => {
                 value={formVariables.password}
                 onChange={setOnChange}
                 placeholder="Password"
-                className="bg-transparent outline-none w-full"
+                className="bg-transparent outline-none w-full text-white"
                 autoComplete="off"
                 required
               />
             </div>
 
-            <p className="cursor-pointer mb-4 text-indigo-500">
+            <p
+              onClick={() => navigate("/reset-password")}
+              className="cursor-pointer mb-4 text-indigo-500"
+            >
               Forgot Password?
             </p>
 
