@@ -9,6 +9,7 @@ type FormState = "Sign Up" | "Login";
 
 const Login = () => {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false)
   const { backendUrl,getUserData,setIsLoggedIn } = useContext(AppContent);
 
   const [formState, setFormState] = useState<FormState>("Sign Up");
@@ -30,6 +31,7 @@ const Login = () => {
     try {
       e.preventDefault();
       axios.defaults.withCredentials = true
+      setIsLoading(true)
 
       if (formState === "Sign Up") {
         const {data} = await axios.post(backendUrl + "/api/auth/register", {
@@ -41,6 +43,7 @@ const Login = () => {
         }else{
           toast.error(data.message)
         }
+        setIsLoading(false)
       } else {
         const { email, password } = formVariables;
         const {data} = await axios.post(backendUrl + "/api/auth/login", {
@@ -54,8 +57,10 @@ const Login = () => {
         }else{
           toast.error(data.message)
         }
+        setIsLoading(false)
       }
     } catch (error:any) {
+      setIsLoading(false)
       toast.error(error.response.data)
       console.error("Error during auth:", error.response.data);
     }
@@ -137,9 +142,10 @@ const Login = () => {
 
             <button
               type="submit"
-              className="w-full py-2.5 rounded-full bg-gradient-to-r from-indigo-500 to-indigo-900"
+              className="w-full py-2.5 rounded-full bg-gradient-to-r from-indigo-500 to-indigo-900 grid place-content-center"
+              disabled={isLoading}
             >
-              {formState}
+              {isLoading?  <div className="loader"></div>: formState}
             </button>
           </form>
 
