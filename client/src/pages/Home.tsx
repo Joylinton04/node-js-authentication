@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useContext } from "react";
 import * as motion from "motion/react-client";
 import type { Variants } from "motion/react";
 import Navbar from "../components/Navbar";
 import assets from "../assets/assets";
+import { AppContent } from "../context/AppContext";
 
 const Home = () => {
+  const {userData, isLoggedIn} = useContext(AppContent)
+
   return (
     <div className="font-default flex flex-col min-h-screen items-center bg-[url(/bg_img.png)]">
       <Navbar />
@@ -26,7 +29,7 @@ const Home = () => {
           className="flex items-center space-x-2"
         >
           <span className="text-lg sm:text-2xl font-semibold">
-            Hey Developer
+            Hey <span className="capitalize">{userData? userData?.name : 'Developer'}!</span>
           </span>
           <span>
             <img
