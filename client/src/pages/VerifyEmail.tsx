@@ -1,4 +1,4 @@
-import React, { FormEvent, useContext, useState } from "react";
+import React, { FormEvent, useContext, useEffect, useState } from "react";
 import assets from "../assets/assets";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -6,7 +6,7 @@ import { AppContent } from "../context/AppContext";
 import axios from "axios";
 
 const VerifyEmail = () => {
-  const { backendUrl, getUserData } = useContext(AppContent);
+  const { backendUrl, getUserData, isLoggedIn, userData } = useContext(AppContent);
   const navigate = useNavigate();
   const inputRefs = React.useRef<(HTMLInputElement | null)[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -63,6 +63,10 @@ const VerifyEmail = () => {
       toast.error(err.message);
     }
   };
+
+  useEffect(() => {
+    isLoggedIn && userData && userData.isAccountVerified && navigate('/')
+  },[isLoggedIn,userData])
 
   return (
     <div className="font-default flex items-center justify-center min-h-screen px-6 sm:px-0 bg-gradient-to-br from-blue-200 to-purple-400">
