@@ -10,7 +10,7 @@ type FormState = "Sign Up" | "Login";
 const Login = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const { backendUrl, getUserData, setIsLoggedIn } = useContext(AppContent);
+  const { backendUrl, getUserData, setIsLoggedIn,setCanAccessResetPassword } = useContext(AppContent);
 
   const [formState, setFormState] = useState<FormState>("Sign Up");
   const [formVariables, setFormVariables] = useState({
@@ -26,6 +26,11 @@ const Login = () => {
       [name]: value,
     }));
   };
+
+  const handleForgotPassword = () => {
+    setCanAccessResetPassword(true)
+    navigate('/reset-password')
+  }
 
   const handleSubmit = async (e: FormEvent) => {
     try {
@@ -134,7 +139,7 @@ const Login = () => {
             </div>
 
             <p
-              onClick={() => navigate("/reset-password")}
+              onClick={() => handleForgotPassword()}
               className="cursor-pointer mb-4 text-indigo-500 hover:underline"
             >
               Forgot Password?

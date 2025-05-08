@@ -1,4 +1,4 @@
-import React, { FormEvent, useContext, useState } from "react";
+import React, { FormEvent, useContext, useEffect, useState } from "react";
 import assets from "../assets/assets";
 import { useNavigate } from "react-router-dom";
 import { AppContent } from "../context/AppContext";
@@ -14,7 +14,7 @@ const ResetPassword = () => {
   const [otp, setOtp] = useState<string>("");
   const inputRefs = React.useRef<(HTMLInputElement | null)[]>([]);
 
-  const { backendUrl, isLoggedIn, userData } = useContext(AppContent);
+  const { backendUrl, isLoggedIn, userData, canAccessResetPassword } = useContext(AppContent);
   axios.defaults.withCredentials = true;
 
   const handleInput = (
@@ -45,6 +45,12 @@ const ResetPassword = () => {
   };
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if(!canAccessResetPassword) {
+      navigate('/login')
+    }
+  },[canAccessResetPassword, navigate])
 
   const handleEmailCheck = async (e: FormEvent) => {
     try {

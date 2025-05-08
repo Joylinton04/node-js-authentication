@@ -12,8 +12,10 @@ interface AppContextType {
     isAccountVerified: boolean;
   } | null;
   setUserData?: React.Dispatch<React.SetStateAction<null>>;
-  getUserData?: () => {};
-  getAuthState?: () => {};
+  getUserData?: () => Promise<void>;
+  getAuthState?: () => Promise<void>;
+  canAccessResetPassword: boolean;
+  setCanAccessResetPassword: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 interface AppContextProviderProps {
@@ -28,6 +30,8 @@ const AppContent = createContext<AppContextType>({
     name: "",
     isAccountVerified: false,
   },
+  canAccessResetPassword: false,
+  setCanAccessResetPassword: () => {},
 });
 
 const AppContextProvider: React.FC<AppContextProviderProps> = ({
@@ -36,6 +40,8 @@ const AppContextProvider: React.FC<AppContextProviderProps> = ({
   const backendUrl = import.meta.env.VITE_BACKEND_URL as string;
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState(null);
+  const [canAccessResetPassword, setCanAccessResetPassword] = useState(false);
+
 
   axios.defaults.withCredentials = true;
 
@@ -62,10 +68,6 @@ const AppContextProvider: React.FC<AppContextProviderProps> = ({
     }
   };
 
-  useEffect(() => {
-    getAuthState();
-  }, []);
-
   const value: AppContextType = {
     backendUrl,
     isLoggedIn,
@@ -74,6 +76,8 @@ const AppContextProvider: React.FC<AppContextProviderProps> = ({
     getUserData,
     setUserData,
     getAuthState,
+    canAccessResetPassword,
+    setCanAccessResetPassword,
   };
 
   return <AppContent.Provider value={value}>{children}</AppContent.Provider>;
