@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState, createContext, ReactNode, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 interface AppContextType {
@@ -42,7 +42,6 @@ const AppContextProvider: React.FC<AppContextProviderProps> = ({
   const [userData, setUserData] = useState(null);
   const [canAccessResetPassword, setCanAccessResetPassword] = useState(false);
 
-
   axios.defaults.withCredentials = true;
 
   const getAuthState = async () => {
@@ -52,10 +51,14 @@ const AppContextProvider: React.FC<AppContextProviderProps> = ({
         setIsLoggedIn(true);
         getUserData();
       } else {
-        toast.error(data.message);
+        setIsLoggedIn(false);
       }
     } catch (err: any) {
-      toast.error("You are authorized to access this page ");
+      if (err.status === 401) {
+        setIsLoggedIn(false);
+      } else {
+        console.error("Auth check failed:", err);
+      }
     }
   };
 
@@ -67,6 +70,11 @@ const AppContextProvider: React.FC<AppContextProviderProps> = ({
       toast.error(err.message);
     }
   };
+
+
+  useEffect(() => {
+    getAuthState();
+  }, []);
 
   const value: AppContextType = {
     backendUrl,

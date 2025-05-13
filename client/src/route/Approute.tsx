@@ -9,7 +9,8 @@ import ProtectedRoute from "../components/ProtectedRoute";
 const Approute = createBrowserRouter([
   {
     path: "/",
-    element: <Home />,
+    element:
+      <Home />
   },
   {
     path: "/login",
@@ -22,9 +23,7 @@ const Approute = createBrowserRouter([
   {
     path: "/verify-email",
     element: (
-      <ProtectedRoute>
         <VerifyEmail />
-      </ProtectedRoute>
     ),
   },
 ]);

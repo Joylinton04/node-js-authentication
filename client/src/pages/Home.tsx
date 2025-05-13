@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import * as motion from "motion/react-client";
 import type { Variants } from "motion/react";
 import Navbar from "../components/Navbar";
@@ -6,7 +6,11 @@ import assets from "../assets/assets";
 import { AppContent } from "../context/AppContext";
 
 const Home = () => {
-  const {userData, isLoggedIn} = useContext(AppContent)
+  const {userData, isLoggedIn,getAuthState} = useContext(AppContent)
+  useEffect(() => {
+    isLoggedIn&&getAuthState?.();
+  }, []);
+
 
   return (
     <div className="font-default flex flex-col min-h-screen items-center bg-[url(/bg_img.png)]">

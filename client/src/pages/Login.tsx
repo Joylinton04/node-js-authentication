@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, FormEvent, useContext } from "react";
+import React, { useState, ChangeEvent, FormEvent, useContext, useEffect } from "react";
 import assets from "../assets/assets";
 import { useNavigate } from "react-router-dom";
 import { AppContent } from "../context/AppContext";
@@ -10,7 +10,14 @@ type FormState = "Sign Up" | "Login";
 const Login = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const { backendUrl, getUserData, setIsLoggedIn,setCanAccessResetPassword } = useContext(AppContent);
+  const { backendUrl, 
+    getUserData, 
+    setIsLoggedIn,
+    setCanAccessResetPassword, 
+    isLoggedIn,
+    userData,
+    getAuthState
+  } = useContext(AppContent);
 
   const [formState, setFormState] = useState<FormState>("Sign Up");
   const [formVariables, setFormVariables] = useState({
@@ -70,6 +77,14 @@ const Login = () => {
       console.error("Error during auth:", error.response.data);
     }
   };
+
+  // useEffect(() => {
+  //   isLoggedIn && getAuthState?.();
+  // }, []);
+
+  useEffect(() => {
+    isLoggedIn && userData && navigate('/')
+  },[isLoggedIn,userData])
 
   return (
     <div className="font-default flex items-center justify-center min-h-screen px-6 sm:px-0 bg-gradient-to-br from-blue-200 to-purple-400">
