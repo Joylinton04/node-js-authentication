@@ -6,7 +6,7 @@ import connectDB from './config/mongodb.js'
 import authRouter from './route/auth.js'
 import userRouter from './route/userRoute.js'
 
-const allowedOrigins = ['http://localhost:5173']
+const allowedOrigins = ['https://node-js-authentication-frontend.onrender.com']
 
 const app = express();
 app.use(express.json())
