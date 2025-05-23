@@ -38,10 +38,19 @@ const AppContextProvider: React.FC<AppContextProviderProps> = ({
   children,
 }) => {
   const backendUrl = import.meta.env.VITE_BACKEND_URL as string;
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState(null);
   const [canAccessResetPassword, setCanAccessResetPassword] = useState(false);
 
+  const getLoggedInState = localStorage.getItem('loggedIn')
+  const savedLoggedInState = getLoggedInState ? JSON.parse(getLoggedInState) : false
+  const [isLoggedIn, setIsLoggedIn] = useState(savedLoggedInState);
+
+  useEffect(() => {
+    localStorage.setItem("loggedIn", isLoggedIn)
+  },[isLoggedIn])
+
+
+  
   axios.defaults.withCredentials = true;
 
   const getAuthState = async () => {
@@ -54,6 +63,7 @@ const AppContextProvider: React.FC<AppContextProviderProps> = ({
         setIsLoggedIn(false);
       }
     } catch (err: any) {
+      console.log(err)
       if (err.status === 401) {
         setIsLoggedIn(false);
       } else {
@@ -67,14 +77,14 @@ const AppContextProvider: React.FC<AppContextProviderProps> = ({
       const { data } = await axios.get(backendUrl + "/api/user/data");
       data.success ? setUserData(data.userData) : toast.error(data.message);
     } catch (err: any) {
-      toast.error(err.message);
+      console.log(err)
     }
   };
 
 
-  useEffect(() => {
-    getAuthState();
-  }, []);
+  // useEffect(() => {
+  //   getAuthState();
+  // }, []);
 
   const value: AppContextType = {
     backendUrl,

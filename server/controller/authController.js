@@ -171,7 +171,7 @@ export const isAuthenticated = async (req, res) => {
   try {
     res.json({ success: true });
   } catch (err) {
-    return res.json({ success: true, message: "Email verified successfully" });
+    return res.json({ false: true, message: err.message });
   }
 };
 
