@@ -74,7 +74,6 @@ const Login = () => {
     } catch (error: any) {
       setIsLoading(false);
       toast.error(error.response.data);
-      console.error("Error during auth:", error.response.data);
     }
   };
 
