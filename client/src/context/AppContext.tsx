@@ -12,7 +12,6 @@ interface AppContextType {
     isAccountVerified: boolean;
   } | null;
   setUserData?: React.Dispatch<React.SetStateAction<null>>;
-  getUserData?: () => Promise<void>;
   getAuthState?: () => Promise<void>;
   canAccessResetPassword: boolean;
   setCanAccessResetPassword: React.Dispatch<React.SetStateAction<boolean>>;
@@ -58,28 +57,31 @@ const AppContextProvider: React.FC<AppContextProviderProps> = ({
       const { data } = await axios.post(backendUrl + "/api/auth/is-auth");
       if (data.success) {
         setIsLoggedIn(true);
-        getUserData();
+        if(data.userData) {
+          setUserData(data.userData)
+        }
       } else {
         setIsLoggedIn(false);
+        setUserData(null);
       }
     } catch (err: any) {
-      console.log(err)
       if (err.status === 401) {
         setIsLoggedIn(false);
+        setUserData(null);
       } else {
         console.error("Auth check failed:", err);
       }
     }
   };
 
-  const getUserData = async () => {
-    try {
-      const { data } = await axios.get(backendUrl + "/api/user/data");
-      data.success ? setUserData(data.userData) : toast.error(data.message);
-    } catch (err: any) {
-      console.log(err)
-    }
-  };
+  // const getUserData = async () => {
+  //   try {
+  //     const { data } = await axios.get(backendUrl + "/api/user/data");
+  //     data.success ? setUserData(data.userData) : toast.error(data.message);
+  //   } catch (err: any) {
+  //     console.log(err)
+  //   }
+  // };
 
 
   // useEffect(() => {
@@ -91,7 +93,6 @@ const AppContextProvider: React.FC<AppContextProviderProps> = ({
     isLoggedIn,
     setIsLoggedIn,
     userData,
-    getUserData,
     setUserData,
     getAuthState,
     canAccessResetPassword,
