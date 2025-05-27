@@ -43,6 +43,8 @@ const Navbar = () => {
   }
   }
 
+  console.log(userData)
+
   return (
     <div className="w-full p-8 flex items-center justify-between gap-4">
       <div className="flex items-center gap-2">

@@ -11,7 +11,6 @@ const Login = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const { backendUrl, 
-    getUserData, 
     setIsLoggedIn,
     setCanAccessResetPassword, 
     isLoggedIn,
@@ -64,7 +63,6 @@ const Login = () => {
         });
         if (data.success) {
           setIsLoggedIn(true);
-          getUserData?.();
           navigate("/");
         } else {
           toast.error(data.message);

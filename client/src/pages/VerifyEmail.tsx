@@ -6,7 +6,7 @@ import { AppContent } from "../context/AppContext";
 import axios from "axios";
 
 const VerifyEmail = () => {
-  const { backendUrl, getUserData, isLoggedIn, userData } = useContext(AppContent);
+  const { backendUrl, isLoggedIn, userData } = useContext(AppContent);
   const navigate = useNavigate();
   const inputRefs = React.useRef<(HTMLInputElement | null)[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -52,7 +52,7 @@ const VerifyEmail = () => {
 
       if (data.success) {
         toast.success(data.message);
-        getUserData?.();
+        // getUserData?.();
         navigate("/");
       } else {
         toast.error(data.message);

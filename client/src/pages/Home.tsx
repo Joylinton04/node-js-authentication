@@ -10,6 +10,7 @@ const Home = () => {
   useEffect(() => {
     isLoggedIn&&getAuthState?.();
   }, []);
+  console.log(`isLoggedIn`, isLoggedIn)
 
 
   return (

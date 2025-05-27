@@ -12,7 +12,7 @@ interface AppContextType {
     isAccountVerified: boolean;
   } | null;
   setUserData?: React.Dispatch<React.SetStateAction<null>>;
-  getUserData?: () => Promise<void>;
+  // getUserData?: () => Promise<void>;
   getAuthState?: () => Promise<void>;
   canAccessResetPassword: boolean;
   setCanAccessResetPassword: React.Dispatch<React.SetStateAction<boolean>>;
@@ -75,14 +75,14 @@ const AppContextProvider: React.FC<AppContextProviderProps> = ({
     }
   };
 
-  const getUserData = async () => {
-    try {
-      const { data } = await axios.get(backendUrl + "/api/user/data");
-      data.success ? setUserData(data.userData) : toast.error(data.message);
-    } catch (err: any) {
-      console.log(err)
-    }
-  };
+  // const getUserData = async () => {
+  //   try {
+  //     const { data } = await axios.get(backendUrl + "/api/user/data");
+  //     data.success ? setUserData(data.userData) : toast.error(data.message);
+  //   } catch (err: any) {
+  //     console.log(err)
+  //   }
+  // };
 
 
   // useEffect(() => {
@@ -94,7 +94,7 @@ const AppContextProvider: React.FC<AppContextProviderProps> = ({
     isLoggedIn,
     setIsLoggedIn,
     userData,
-    getUserData,
+    // getUserData,
     setUserData,
     getAuthState,
     canAccessResetPassword,
