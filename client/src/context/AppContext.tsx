@@ -41,25 +41,28 @@ const AppContextProvider: React.FC<AppContextProviderProps> = ({
   const [userData, setUserData] = useState(null);
   const [canAccessResetPassword, setCanAccessResetPassword] = useState(false);
 
-  const getLoggedInState = localStorage.getItem('loggedIn')
-  const savedLoggedInState = getLoggedInState ? JSON.parse(getLoggedInState) : false
+  const getLoggedInState = localStorage.getItem("loggedIn");
+  const savedLoggedInState = getLoggedInState
+    ? JSON.parse(getLoggedInState)
+    : false;
   const [isLoggedIn, setIsLoggedIn] = useState(savedLoggedInState);
 
   useEffect(() => {
-    localStorage.setItem("loggedIn", isLoggedIn)
-  },[isLoggedIn])
-
-
-  
-  axios.defaults.withCredentials = true;
+    localStorage.setItem("loggedIn", isLoggedIn);
+  }, [isLoggedIn]);
 
   const getAuthState = async () => {
     try {
-      const { data } = await axios.post(backendUrl + "/api/auth/is-auth");
+      // axios.defaults.withCredentials = true;
+      const { data } = await axios.post(
+      backendUrl + "/api/auth/is-auth",
+      {},
+      { withCredentials: true } // ✅ correct place
+    );
       if (data.success) {
         setIsLoggedIn(true);
-        if(data.userData) {
-          setUserData(data.userData)
+        if (data.userData) {
+          setUserData(data.userData);
         }
       } else {
         setIsLoggedIn(false);
@@ -83,7 +86,6 @@ const AppContextProvider: React.FC<AppContextProviderProps> = ({
   //     console.log(err)
   //   }
   // };
-
 
   // useEffect(() => {
   //   getAuthState();

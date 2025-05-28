@@ -78,7 +78,6 @@ const Login = () => {
   // useEffect(() => {
   //   isLoggedIn && getAuthState?.();
   // }, []);
-
   useEffect(() => {
     isLoggedIn && userData && navigate('/')
   },[isLoggedIn,userData])
