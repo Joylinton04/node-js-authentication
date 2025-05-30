@@ -78,10 +78,10 @@ export const login = async (req, res) => {
       // httpOnly: true,
       // secure: true,
       // sameSite: "None", //required for cross-site
-      httpOnly: true,
-      secure: true,
-      secure: process.env.NODE_ENV === "production",
       sameSite: "None", //required for cross-site
+      secure: true,
+      httpOnly: true,
+      // secure: process.env.NODE_ENV === "production",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
